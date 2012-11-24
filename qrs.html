@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>QRS Display</title>
+  </head>
+
+  <body>
+    <canvas id="myCanvas" width="800" height="500">
+         Your browser does not support Canvas
+    </canvas>
+
+<script type="text/javascript">
+    var elem = document.getElementById('myCanvas');
+
+// Check the element is in the DOM and the browser supports canvas
+if(elem.getContext) {
+// Initaliase a 2-dimensional drawing context
+var context = elem.getContext('2d');
+//Canvas commands go here
+}
+
+function callWrite() {
+    writeOnePoint();
+}
+    
+// class Source
+function Source() {
+    // index into array 
+    this.currIndex = 0;
+
+    this.hexArray = 
+        new Array( 5, 5, 5, -1, -12, -19, -25, -28, -28, -30, 
+                   -30, -30, -31, -30, -30, -40, -52, -49, -46, 14,
+                   97, 124, 77, 16, -25, -38, -43, -48, -49, -48,
+                   -43, -38, -37, -37, -33, -20, -6, 1, 7, 7, 10, 7);
+    
+    // Return the next value in array
+    this.getNext = function() {
+        return this.hexArray[this.currIndex++];
+    }
+
+    // Reset currIndex so we can start over...
+    this.reset = function() {
+        this.currIndex = 0;
+    }
+    
+    // return length of array.
+    this.length = function() {
+        return this.hexArray.length;
+    }
+
+    // Return number of samples remaining
+    this.samples = function() {
+        return (this.hexArray.length - this.currIndex);
+    }
+}
+
+// Use to clear ahead of the present location:
+function clearAheadOfCursor(x)
+{
+    var y= 30;
+    var w=5;
+    var h = 250;
+    
+    context.clearRect ( x , y , w , h );
+}
+
+
+var ourSample = new Source;
+
+// Write one point, and calls itself with setTimeout
+function writeOnePoint() {
+
+    var originX = 10;
+    var originY = 200;
+    
+    
+    
+    if (typeof writeOnePoint.currentX == 'undefined'){
+        writeOnePoint.currentX    = originX;
+    }
+    if (typeof writeOnePoint.currentY == 'undefined'){
+        writeOnePoint.currentY    = originY;
+    }
+    
+    var t;
+    var pixelsPerSample = 4;
+    
+    context.beginPath();
+    context.strokeStyle = '#f00';
+    context.lineWidth = 2; //lineWidth;
+    
+    if (writeOnePoint.currentX > 800)
+    {
+        writeOnePoint.currentX = originX;
+        clearAheadOfCursor(writeOnePoint.currentX -1);
+    }
+
+    clearAheadOfCursor(writeOnePoint.currentX +1);
+
+    context.moveTo(writeOnePoint.currentX, writeOnePoint.currentY);
+    
+    if (ourSample.samples() > 0)
+    {
+        var offsetY  = ourSample.getNext(); 
+
+        writeOnePoint.currentX += pixelsPerSample;
+        writeOnePoint.currentY = originY - offsetY;
+        
+        context.lineTo(writeOnePoint.currentX, writeOnePoint.currentY);
+        context.stroke();
+
+//        t = setTimeout("callWrite()", 25);
+
+    }
+    else {
+        ourSample.reset();
+//        t = setTimeout("callWrite()", 25);
+    }
+    t = setTimeout("writeOnePoint()", 25);
+}
+
+
+    
+    
+
+
+
+var lineWidth   = 2;
+ 
+//var t=0;
+
+//document.write(sampleCount);
+
+context.beginPath();
+context.strokeStyle = '#f00';
+context.lineWidth = lineWidth;
+
+context.fillStyle = "#000000"; // text color
+context.font = "20pt Calibri";
+context.fillText("This is my first attempt at using the Javascript <canvas> tag.", 10, 20);
+context.fillText("One segment of a slightly weird QRS rhythm is repeated over and over...", 10, 300);
+
+writeOnePoint();
+
+
+</script>
+
+
+
+  
+
+</body></html>
