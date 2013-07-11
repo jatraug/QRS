@@ -24,7 +24,9 @@ References:
 var fs = require('fs');
 var program = require('commander');
 var cheerio = require('cheerio');
+var rest = require('restler');
 var HTMLFILE_DEFAULT = "index.html";
+var URL_DEFAULT = "";
 var CHECKSFILE_DEFAULT = "checks.json";
 
 var assertFileExists = function(infile) {
@@ -33,6 +35,16 @@ var assertFileExists = function(infile) {
         console.log("%s does not exist. Exiting.", instr);
         process.exit(1); // http://nodejs.org/api/process.html#process_process_exit_code
     }
+    return instr;
+};
+
+var assertUrlExists = function(url) {
+    var instr = url.toString();
+//    console.log("URL: " + instr);
+    // if(!fs.existsSync(instr)) {
+    //     console.log("%s does not exist. Exiting.", instr);
+    //     process.exit(1); // http://nodejs.org/api/process.html#process_process_exit_code
+    // }
     return instr;
 };
 
@@ -45,6 +57,7 @@ var loadChecks = function(checksfile) {
 };
 
 var checkHtmlFile = function(htmlfile, checksfile) {
+//    console.log("Html: " + htmlfile);
     $ = cheerioHtmlFile(htmlfile);
     var checks = loadChecks(checksfile).sort();
     var out = {};
@@ -53,6 +66,44 @@ var checkHtmlFile = function(htmlfile, checksfile) {
         out[checks[ii]] = present;
     }
     return out;
+};
+
+
+
+
+    
+var buildfn = function(checksfile) {
+    var processUrlData = function(result, response) {
+//	console.log("pRD");
+        if (result instanceof Error) {
+            console.error('Error: ' + util.format(response.message));
+        } else {
+	    var urlfile = "Temp.txt";
+//            console.error("Wrote %s", urlfile);
+            fs.writeFileSync(urlfile, result);
+	    $ = cheerioHtmlFile(urlfile);
+	    var checks = loadChecks(checksfile).sort();
+	    var out = {};
+	    for(var ii in checks) {
+		var present = $(checks[ii]).length > 0;
+		out[checks[ii]] = present;
+	    }
+	    var outJson = JSON.stringify(out, null, 4);
+	    console.log(outJson);
+        }
+    };
+    return processUrlData;
+};
+
+
+
+var checkUrl = function(urlfile, checksfile) {
+//    console.log("Url: " + urlfile);
+    processUrlData = buildfn(checksfile);
+//    console.log("Rest");
+    rest.get(urlfile).on('complete', processUrlData);
+
+
 };
 
 var clone = function(fn) {
@@ -65,8 +116,14 @@ if(require.main == module) {
     program
         .option('-c, --checks <check_file>', 'Path to checks.json', clone(assertFileExists), CHECKSFILE_DEFAULT)
         .option('-f, --file <html_file>', 'Path to index.html', clone(assertFileExists), HTMLFILE_DEFAULT)
+        .option('-u, --url <url>', 'Desired url ', clone(assertUrlExists), URL_DEFAULT)
         .parse(process.argv);
-    var checkJson = checkHtmlFile(program.file, program.checks);
+//    console.log("UDEF: " + URL_DEFAULT + "<-");
+    if(program.url !== "") {
+	var checkJson = checkUrl(program.url, program.checks);
+    } else {
+	var checkJson = checkHtmlFile(program.file, program.checks);
+    }
     var outJson = JSON.stringify(checkJson, null, 4);
     console.log(outJson);
 } else {
