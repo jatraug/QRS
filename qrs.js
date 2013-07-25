@@ -69,6 +69,7 @@ function writeOnePoint() {
     context.strokeStyle = '#f00';
     context.lineWidth = 2; //lineWidth;
     
+//    if (writeOnePoint.currentX > ($(window).width() -  50))
     if (writeOnePoint.currentX > 800)
     {
         writeOnePoint.currentX = originX;
@@ -96,7 +97,7 @@ function writeOnePoint() {
         ourSample.reset();
 //        t = setTimeout("callWrite()", 25);
     }
-    t = setTimeout("writeOnePoint()", 25);
+    t = setTimeout("writeOnePoint()", 20);
 }
 
 
