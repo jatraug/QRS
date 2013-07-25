@@ -1,7 +1,7 @@
 {
-  "name": "node-js-sample",
+  "name": "QRS waveform server",
   "version": "0.0.1",
-  "description": "a sample node.js app QRS",
+  "description": "node.js app QRS",
   "main": "web.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,8 +10,8 @@
     "express": "3.3.x"
   },
   "engines": {
-    "node": "0.8.x",
-    "npm": "1.1.x"
+    "node": "0.10.x",
+    "npm": "1.2.x"
   },
   "repository": {
     "type": "git",
@@ -23,5 +23,4 @@
   ],
   "author": "Jim Traugott",
   "license": "BSD",
-  "gitHead": "90fd58e343c29e54fc1d4e19036595500b2bdc21"
 }
