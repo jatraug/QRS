@@ -1,5 +1,5 @@
 {
-  "name": "QRS waveform server",
+  "name": "QRS_waveform_server",
   "version": "0.0.1",
   "description": "node.js app QRS",
   "main": "web.js",
@@ -22,5 +22,5 @@
     "heroku"
   ],
   "author": "Jim Traugott",
-  "license": "BSD",
+  "license": "BSD"
 }
