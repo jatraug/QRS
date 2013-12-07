@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>QRS Display</title>
+  </head>
+
+  <body>
+    <canvas id="myCanvas" width="800" height="500">
+         Your browser does not support Canvas
+    </canvas>
+
+<script src="./jquery.js"></script>
+ <script src="./qrs.js"></script>
+<script type="text/javascript">
+
+
+
+
+
+
+    var elem = document.getElementById('myCanvas');
+
+// Check the element is in the DOM and the browser supports canvas
+if(elem.getContext) {
+// Initaliase a 2-dimensional drawing context
+var context = elem.getContext('2d');
+//Canvas commands go here
+}
+
+
+
+var lineWidth   = 2;
+ 
+//var t=0;
+
+//document.write(sampleCount);
+
+context.beginPath();
+context.strokeStyle = '#f00';
+context.lineWidth = lineWidth;
+
+context.fillStyle = "#000000"; // text color
+context.font = "20pt Calibri";
+// context.fillText("This is my first attempt at using the Javascript <canvas> tag.", 10, 20);
+// context.fillText("One segment of a slightly weird QRS rhythm is repeated over and over...", 10, 300);
+
+writeOnePoint();
+
+
+</script>
+
+
+</body></html>
+
